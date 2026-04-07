@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OralScan AI - Advanced Cancer Detection</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2a6bc1;
+            --secondary: #1cb0c9;
+            --accent: #ff6b6b;
+            --light: #f8fafc;
+            --dark: #2d3748;
+            --success: #4ecdc4;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --background-gradient: linear-gradient(135deg, #0a1f33, #1e3a5a, #2c5364);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--dark);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            background: var(--background-gradient);
+            background-attachment: fixed;
+        }
+        
+        /* Animated Background */
+        .background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            animation: organicFloat 20s infinite ease-in-out;
+            filter: blur(5px);
+        }
+        
+        .circle:nth-child(1) { width: 100px; height: 100px; top: 15%; left: 10%; animation-delay: 0s; }
+        .circle:nth-child(2) { width: 150px; height: 150px; top: 60%; left: 80%; animation-delay: 5s; animation-duration: 25s; }
+        .circle:nth-child(3) { width: 70px; height: 70px; top: 70%; left: 25%; animation-delay: 10s; animation-duration: 18s; }
+        .circle:nth-child(4) { width: 120px; height: 120px; top: 25%; left: 60%; animation-delay: 3s; animation-duration: 22s; }
+        .circle:nth-child(5) { width: 90px; height: 90px; top: 85%; left: 50%; animation-delay: 7s; animation-duration: 16s; }
+        
+        @keyframes organicFloat {
+            0%, 100% { transform: translateY(0) scale(1) rotate(0deg); opacity: 1; }
+            25% { transform: translate(20px, -30px) scale(0.95) rotate(5deg); opacity: 0.8; }
+            50% { transform: translateY(-50px) scale(1.1) rotate(-5deg); opacity: 1; }
+            75% { transform: translate(-20px, -20px) scale(1.05) rotate(2deg); opacity: 0.9; }
+        }
+        
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 120" xmlns="http://www.w3.org/2000/svg" fill="rgba(255,255,255,0.03)"><path d="M0 0v46.29c47.79 22.2 103.59 32.17 158 28 70.36-5.37 136.33-33.31 206.8-37.5 73.84-4.36 147.54 16.88 218.2 35.26 69.27 18 138.3 24.88 209.4 13.08 36.15-6 69.85-17.84 104.45-29.34C989.49 25 1113-14.29 1200 52.47V0z" /></svg>');
+            background-repeat: repeat-x;
+            background-size: 1200px 100px;
+            animation: wave 15s linear infinite;
+        }
+        
+        .wave:nth-child(6) { bottom: 0; animation-delay: 0s; opacity: 0.7; }
+        .wave:nth-child(7) { bottom: 10px; animation-delay: -5s; opacity: 0.5; background-size: 1100px 90px; }
+        .wave:nth-child(8) { bottom: 20px; animation-delay: -2s; opacity: 0.3; background-size: 1000px 80px; }
+        
+        @keyframes wave {
+            0% { background-position-x: 0; }
+            100% { background-position-x: 1200px; }
+        }
+        
+        .container {
+            max-width: 1200px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 0 0 50px rgba(255, 255, 255, 0.05) inset;
+            transition: all 0.4s ease;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(15px);
+            margin-top: 2rem;
+            position: relative;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25), 0 0 60px rgba(255, 255, 255, 0.08) inset;
+        }
+        
+        .card-header {
+            background: var(--gradient);
+            color: white;
+            border-bottom: none;
+            padding: 1.2rem 1.5rem;
+            position: relative;
+            overflow: hidden;
+            font-weight: 600;
+        }
+        
+        .card-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(30deg);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(200%) rotate(30deg); }
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.05), transparent 70%);
+            z-index: -1;
+            filter: blur(20px);
+            opacity: 0.5;
+            animation: lightLeak 10s infinite alternate ease-in-out;
+        }
+        
+        @keyframes lightLeak {
+            from { transform: translate(0, 0); }
+            to { transform: translate(15px, 15px); }
+        }
+        
+        .preview-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px dashed rgba(203, 213, 224, 0.7);
+            border-radius: 12px;
+            min-height: 250px;
+            background-color: rgba(248, 250, 252, 0.7);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .preview-container:hover {
+            border-color: var(--primary);
+            background-color: rgba(241, 249, 255, 0.8);
+            box-shadow: 0 0 10px rgba(42, 107, 193, 0.15);
+        }
+        
+        .preview-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .preview-container:hover::before {
+            opacity: 0.05;
+        }
+        
+        #image-preview, #video {
+            max-width: 100%;
+            max-height: 400px;
+            display: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        #canvas { 
+            display: none;
+        }
+        
+        .result-img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .result-img:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        h2, h5, h6 {
+            font-weight: 600;
+        }
+        
+        h2 {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            display: inline-block;
+            margin-bottom: 1rem;
+            text-shadow: 0 2px 10px rgba(42, 107, 193, 0.3);
+            animation: none;
+        }
+        
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient);
+            border-radius: 3px;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.5s ease;
+        }
+        
+        h2:hover::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        
+        .lead {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 400;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn {
+            border-radius: 50px;
+            padding: 0.6rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            transform: perspective(1px) translateZ(0);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::before {
+            opacity: 1;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+        }
+        
+        .btn:hover::after {
+            animation: shine 0.8s ease;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            border: none;
+            box-shadow: 0 4px 10px rgba(42, 107, 193, 0.2);
+        }
+        
+        .btn-primary:hover {
+            background: #1d5aad;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(42, 107, 193, 0.3);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(78, 205, 196, 0.2);
+        }
+        
+        .btn-success:hover {
+            background: #3dbbaf;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #718096;
+            border: none;
+        }
+        
+        .btn-secondary:hover {
+            background: #4a5568;
+            transform: translateY(-2px);
+        }
+        
+        .btn-info {
+            background: var(--secondary);
+            border: none;
+        }
+        
+        .btn-info:hover {
+            background: #1899b2;
+            transform: translateY(-2px);
+        }
+        
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e0;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(42, 107, 193, 0.2), 0 2px 5px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+            background: white;
+        }
+        
+        .badge {
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+        }
+        
+        .list-group-item {
+            border-radius: 10px !important;
+            margin-bottom: 0.5rem;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.8);
+        }
+        
+        .list-group-item:hover {
+            background-color: #f8fafc;
+            transform: translateX(5px);
+        }
+        
+        .alert {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        /* 3D elements */
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        /* Custom elements */
+        .health-icon {
+            font-size: 2.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            display: inline-block;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+        
+        .risk-badge {
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+        }
+        
+        .risk-low { background-color: #c6f6d5; color: #22543d; }
+        .risk-medium { background-color: #feebc8; color: #744210; }
+        .risk-high { background-color: #fed7d7; color: #742a2a; }
+        
+        /* Animation for results section */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-result {
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        /* Loading animation */
+        .loader {
+            display: inline-block;
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+        
+        .loader:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid transparent;
+            border-top-color: var(--primary);
+            border-bottom-color: var(--primary);
+            animation: spin 1.5s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Camera animation */
+        .camera-flash {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .flash {
+            animation: flash 0.5s ease;
+        }
+        
+        @keyframes flash {
+            0% { opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .card { margin-top: 1rem; }
+            .btn { width: 100%; margin-bottom: 0.5rem; }
+            .d-flex.gap-2 { flex-direction: column; }
+            .background-animation { display: none; }
+            body { background: var(--background-gradient); }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-animation">
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="circle"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+    <div class="container my-5">
+        <div class="text-center mb-4">
+            <div class="health-icon floating">
+                <i class="fas fa-teeth-open"></i>
+            </div>
+            <h2>OralScan AI - Advanced Cancer Detection</h2>
+            <p class="lead">Upload a clinical image for AI-assisted diagnosis and detailed report</p>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-{% if category == 'success' %}check-circle{% else %}exclamation-circle{% endif %} me-2"></i>
+                            <div>{{ message }}</div>
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% if not result %}
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-user-circle me-2"></i>Patient & Image Details</h5>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('analyze') }}" method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="mb-3"><i class="fas fa-info-circle me-2"></i>Patient Information</h6>
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6 mb-3">
+                                    <label for="age" class="form-label">Age</label>
+                                    <input type="number" class="form-control" id="age" name="age">
+                                </div>
+                                <div class="col-sm-6 mb-3">
+                                    <label for="sex" class="form-label">Sex</label>
+                                    <select class="form-select" id="sex" name="sex">
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="dob" class="form-label">Date of Birth</label>
+                                <input type="date" class="form-control" id="dob" name="dob">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email for Report (Optional)</label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+                            <div class="mb-3">
+                                <label for="causes" class="form-label">Clinical History / Reported Causes</label>
+                                <textarea class="form-control" id="causes" name="causes" rows="3" placeholder="e.g., Smoker for 10 years, lesion present for 2 months..."></textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mb-3"><i class="fas fa-camera me-2"></i>Image & Model Selection</h6>
+                            <div class="mb-3">
+                                <label class="form-label">Lesion Image</label>
+                                <div class="preview-container p-2">
+                                    <div class="camera-flash" id="camera-flash"></div>
+                                    <video id="video" playsinline autoplay></video>
+                                    <img id="image-preview" src="#" alt="Your image preview" />
+                                    <span id="preview-text" class="text-muted">Image Preview</span>
+                                </div>
+                                <canvas id="canvas"></canvas>
+                            </div>
+                            <div class="d-flex justify-content-center gap-2 mb-3">
+                                <label for="image-upload" class="btn btn-secondary">
+                                    <i class="fas fa-upload me-2"></i> Upload File
+                                </label>
+                                <input type="file" name="image" id="image-upload" accept=".png, .jpg, .jpeg" class="d-none" required>
+                                <button type="button" id="start-camera" class="btn btn-info"><i class="fas fa-camera me-2"></i>Start Camera</button>
+                                <button type="button" id="capture-photo" class="btn btn-primary" style="display:none;"><i class="fas fa-camera me-2"></i>Capture</button>
+                            </div>
+                            <div class="mb-3">
+                                <label for="model_choice" class="form-label">AI Model</label>
+                                <select class="form-select" name="model_choice" id="model_choice">
+                                    <option value="EfficientNetV2" selected>EfficientNetV2</option>
+                                    <option value="ConvNeXt">ConvNeXt</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="img_type" class="form-label">Image Type</label>
+                                <select class="form-select" name="img_type" id="img_type">
+                                    <option value="clinical" selected>Clinical</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-success btn-lg"><i class="fas fa-search me-2"></i>Analyze Image</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+        {% if result %}
+        <div class="card animate-result">
+            <div class="card-header bg-success text-white">
+                <h5><i class="fas fa-check-circle me-2"></i>Analysis Complete</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-sm-6 text-center mb-4">
+                                <h6>Original Image</h6>
+                                <img src="{{ result.upload_image }}" alt="Uploaded Image" class="result-img mb-3">
+                            </div>
+                            <div class="col-sm-6 text-center mb-4">
+                                <h6>AI Focus (Grad-CAM)</h6>
+                                <img src="{{ result.grad_image }}" alt="Grad-CAM Heatmap" class="result-img mb-3">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="mb-3">Diagnosis Results</h6>
+                        <ul class="list-group mb-4">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Prediction:
+                                <span class="badge bg-primary rounded-pill fs-6">{{ result.prediction }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Confidence:
+                                <span class="fw-bold">{{ result.confidence }}%</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Risk Level:
+                                <span class="risk-badge risk-{{ result.risk|lower }}">{{ result.risk }}</span>
+                            </li>
+                        </ul>
+                        <div class="d-grid gap-2">
+                            <a href="{{ url_for('download', filename=result.pdf_file.split('/')[-1]) }}" class="btn btn-danger">
+                                <i class="fas fa-file-pdf me-2"></i>Download PDF Report
+                            </a>
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-redo me-2"></i>Analyze Another Image
+                            </a>
+                        </div>
+                        {% if result.email %}
+                            <p class="mt-3 text-center text-muted small">
+                                <i class="fas fa-envelope me-1"></i>
+                                A copy of the report was 
+                                {% if result.email_status == 'sent' %}
+                                    successfully sent to {{ result.email }}.
+                                {% else %}
+                                    <strong>not sent</strong> to {{ result.email }}. Error: {{ result.email_status }}
+                                {% endif %}
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const fileInput = document.getElementById('image-upload');
+        const imagePreview = document.getElementById('image-preview');
+        const previewText = document.getElementById('preview-text');
+        const cameraFlash = document.getElementById('camera-flash');
+        const startCamBtn = document.getElementById('start-camera');
+        const captureBtn = document.getElementById('capture-photo');
+        
+        let stream;
+        
+        startCamBtn.addEventListener('click', async () => {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            imagePreview.style.display = 'none';
+            previewText.style.display = 'none';
+            video.style.display = 'block';
+            captureBtn.style.display = 'inline-block';
+            startCamBtn.innerHTML = '<i class="fas fa-sync me-2"></i>Restart Camera';
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+                video.srcObject = stream;
+            } catch (err) {
+                console.error("Error accessing camera: ", err);
+                alert('Could not access the camera. Please ensure you have a camera connected and have granted permission in your browser.');
+                video.style.display = 'none';
+                captureBtn.style.display = 'none';
+                previewText.style.display = 'block';
+            }
+        });
+        
+        captureBtn.addEventListener('click', () => {
+            cameraFlash.classList.add('flash');
+            setTimeout(() => cameraFlash.classList.remove('flash'), 500);
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+            imagePreview.src = canvas.toDataURL('image/jpeg');
+            imagePreview.style.display = 'block';
+        
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+            video.style.display = 'none';
+            captureBtn.style.display = 'none';
+        
+            canvas.toBlob(blob => {
+                const file = new File([blob], 'capture.jpg', { type: 'image/jpeg' });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+                fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+            }, 'image/jpeg');
+        });
+        
+        fileInput.addEventListener('change', () => {
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                    }
+                    video.style.display = 'none';
+                    previewText.style.display = 'none';
+                    captureBtn.style.display = 'none';
+                    imagePreview.src = e.target.result;
+                    imagePreview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>
