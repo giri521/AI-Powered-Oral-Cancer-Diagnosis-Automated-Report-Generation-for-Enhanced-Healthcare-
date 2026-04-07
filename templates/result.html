@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Model Evaluation</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
+</head>
+<body class="p-4">
+    <div class="container">
+        <h2>AI Oral Cancer Model Evaluation</h2>
+        <hr>
+
+        <h4>Overall Metrics</h4>
+        <ul>
+            <li><strong>Accuracy:</strong> {{ accuracy | round(4) }}</li>
+            <li><strong>F1 Score:</strong> {{ f1 | round(4) }}</li>
+            <li><strong>Precision:</strong> {{ precision | round(4) }}</li>
+            <li><strong>Recall:</strong> {{ recall | round(4) }}</li>
+        </ul>
+
+        <h4>Per-Class Metrics</h4>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Class</th>
+                    <th>Precision</th>
+                    <th>Recall</th>
+                    <th>F1-Score</th>
+                    <th>Support</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cls, metrics in class_report.items() %}
+                    {% if cls != 'accuracy' and cls != 'macro avg' and cls != 'weighted avg' %}
+                        <tr>
+                            <td>{{ cls }}</td>
+                            <td>{{ metrics.precision | round(4) }}</td>
+                            <td>{{ metrics.recall | round(4) }}</td>
+                            <td>{{ metrics['f1-score'] | round(4) }}</td>
+                            <td>{{ metrics.support }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <h4>Confusion Matrix</h4>
+        <img src="data:image/png;base64,{{ conf_img }}" class="img-fluid" alt="Confusion Matrix">
+
+    </div>
+</body>
+</html>
